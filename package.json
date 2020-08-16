@@ -1,0 +1,29 @@
+{
+  "name": "forgeapi-auth",
+  "version": "0.1.0",
+  "description": "auth module for forge api",
+  "main": "oauth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pkhafizov/forgeapi-auth.git"
+  },
+  "keywords": [
+    "oauth",
+    "autodesk",
+    "forge",
+    "api"
+  ],
+  "author": "Pavel Khafizov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pkhafizov/forgeapi-auth/issues"
+  },
+  "homepage": "https://github.com/pkhafizov/forgeapi-auth#readme",
+  "dependencies": {
+    "aws-sdk": "^2.678.0",
+    "forge-apis": "^0.7.3"
+  }
+}
