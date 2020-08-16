@@ -19,12 +19,12 @@ async function getClient(scopes, forgeClientIdParam, forgeClientSecretParam) {
 }
 
 let cache = {};
-async function getToken(scopes) {
+async function getToken(scopes, forgeClientIdParam, forgeClientSecretParam) {
   const key = scopes.join('+');
   if (cache[key]) {
     return cache[key];
   }
-  const client = await getClient(scopes);
+  const client = await getClient(scopes, forgeClientIdParam, forgeClientSecretParam);
   let credentials = await client.authenticate();
   cache[key] = credentials;
   setTimeout(() => {
@@ -33,9 +33,9 @@ async function getToken(scopes) {
   return credentials;
 }
 
-async function getPublicToken() {
+async function getPublicToken(forgeClientIdParam, forgeClientSecretParam) {
   let scopesPublic = ['viewables:read'];
-  return getToken(scopesPublic);
+  return getToken(scopesPublic, forgeClientIdParam, forgeClientSecretParam);
 }
 
 async function getInternalToken() {
