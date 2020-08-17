@@ -7,8 +7,13 @@ const ssm = new AWS.SSM();
 
 async function getClient(scopes) {
   try {
-    let forgeClientIdParam = process.env.FORGE_CLIENT_ID;
-    let forgeClientSecretParam = process.env.FORGE_CLIENT_SECRET;
+    var forgeClientIdParam = {
+      Name: process.env.FORGE_CLIENT_ID
+    };
+    var forgeClientSecretParam = {
+      Name: process.env.FORGE_CLIENT_SECRET,
+      WithDecryption: true
+    };
     let client_id_request = await ssm.getParameter(forgeClientIdParam).promise();
     let client_id = client_id_request.Parameter.Value;
     let client_secret_request = await ssm.getParameter(forgeClientSecretParam).promise();
