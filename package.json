@@ -1,6 +1,6 @@
 {
   "name": "forgeapi-auth",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "auth module for forge api",
   "main": "oauth.js",
   "scripts": {
