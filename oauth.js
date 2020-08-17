@@ -5,8 +5,10 @@ const { AuthClientTwoLegged } = require('forge-apis');
 
 const ssm = new AWS.SSM();
 
-async function getClient(scopes, forgeClientIdParam, forgeClientSecretParam) {
+async function getClient(scopes) {
   try {
+    let forgeClientIdParam = process.env.FORGE_CLIENT_ID;
+    let forgeClientSecretParam = process.env.FORGE_CLIENT_SECRET;
     let client_id_request = await ssm.getParameter(forgeClientIdParam).promise();
     let client_id = client_id_request.Parameter.Value;
     let client_secret_request = await ssm.getParameter(forgeClientSecretParam).promise();
@@ -19,12 +21,12 @@ async function getClient(scopes, forgeClientIdParam, forgeClientSecretParam) {
 }
 
 let cache = {};
-async function getToken(scopes, forgeClientIdParam, forgeClientSecretParam) {
+async function getToken(scopes) {
   const key = scopes.join('+');
   if (cache[key]) {
     return cache[key];
   }
-  const client = await getClient(scopes, forgeClientIdParam, forgeClientSecretParam);
+  const client = await getClient(scopes);
   let credentials = await client.authenticate();
   cache[key] = credentials;
   setTimeout(() => {
@@ -33,9 +35,9 @@ async function getToken(scopes, forgeClientIdParam, forgeClientSecretParam) {
   return credentials;
 }
 
-async function getPublicToken(forgeClientIdParam, forgeClientSecretParam) {
+async function getPublicToken() {
   let scopesPublic = ['viewables:read'];
-  return getToken(scopesPublic, forgeClientIdParam, forgeClientSecretParam);
+  return getToken(scopesPublic);
 }
 
 async function getInternalToken() {
