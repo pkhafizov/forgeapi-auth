@@ -6,12 +6,14 @@ const { AuthClientTwoLegged } = require('forge-apis');
 const ssm = new AWS.SSM();
 
 async function getClient(scopes) {
+  let paramForgeClientId = process.env.FORGE_CLIENT_ID;
+  let paramForgeClientSecret = process.env.FORGE_CLIENT_SECRET;
   try {
     var forgeClientIdParam = {
-      Name: process.env.FORGE_CLIENT_ID
+      Name: paramForgeClientId
     };
     var forgeClientSecretParam = {
-      Name: process.env.FORGE_CLIENT_SECRET,
+      Name: paramForgeClientSecret,
       WithDecryption: true
     };
     let client_id_request = await ssm.getParameter(forgeClientIdParam).promise();
