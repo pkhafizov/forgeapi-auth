@@ -6,25 +6,10 @@ const { AuthClientTwoLegged } = require('forge-apis');
 const ssm = new AWS.SSM();
 
 async function getClient(scopes) {
-  let paramForgeClientId = process.env.FORGE_CLIENT_ID;
-  let paramForgeClientSecret = process.env.FORGE_CLIENT_SECRET;
-  try {
-    var forgeClientIdParam = {
-      Name: paramForgeClientId
-    };
-    var forgeClientSecretParam = {
-      Name: paramForgeClientSecret,
-      WithDecryption: true
-    };
-    let client_id_request = await ssm.getParameter(forgeClientIdParam).promise();
-    let client_id = client_id_request.Parameter.Value;
-    let client_secret_request = await ssm.getParameter(forgeClientSecretParam).promise();
-    let client_secret = client_secret_request.Parameter.Value;
-    let scopesInternal = ['bucket:create', 'bucket:read', 'data:read', 'data:create', 'data:write'];
-    return new AuthClientTwoLegged(client_id, client_secret, scopes || scopesInternal);
-  } catch (error) {
-    console.log('error: ', error);
-  }
+  let client_id = getClientId();
+  let client_secret = getClientSecret();
+  let scopesInternal = ['bucket:create', 'bucket:read', 'data:read', 'data:create', 'data:write'];
+  return new AuthClientTwoLegged(client_id, client_secret, scopes || scopesInternal);
 }
 
 let cache = {};
@@ -52,8 +37,37 @@ async function getInternalToken() {
   return getToken(scopesInternal);
 }
 
+async function getClientId() {
+  try {
+    let paramForgeClientId = process.env.FORGE_CLIENT_ID;
+    let forgeClientIdParam = {
+      Name: paramForgeClientId
+    };
+
+    let client_id_request = await ssm.getParameter(forgeClientIdParam).promise();
+    return client_id_request.Parameter.Value;
+  } catch (error) {
+    console.log('Error: ', error);
+  }
+}
+
+async function getClientSecret() {
+  try {
+    let paramForgeClientSecret = process.env.FORGE_CLIENT_SECRET;
+    var forgeClientSecretParam = {
+      Name: paramForgeClientSecret,
+      WithDecryption: true
+    };
+    let client_secret_request = await ssm.getParameter(forgeClientSecretParam).promise();
+    return client_secret_request.Parameter.Value;
+  } catch (error) {
+    console.log('Error: ', error);
+  }
+}
+
 module.exports = {
   getClient,
   getPublicToken,
-  getInternalToken
+  getInternalToken,
+  getClientId
 };
