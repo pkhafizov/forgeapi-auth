@@ -6,8 +6,8 @@ const { AuthClientTwoLegged } = require('forge-apis');
 const ssm = new AWS.SSM();
 
 async function getClient(scopes) {
-  let client_id = getClientId();
-  let client_secret = getClientSecret();
+  let client_id = await getClientId();
+  let client_secret = await getClientSecret();
   let scopesInternal = ['bucket:create', 'bucket:read', 'data:read', 'data:create', 'data:write'];
   return new AuthClientTwoLegged(client_id, client_secret, scopes || scopesInternal);
 }
